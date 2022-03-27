@@ -13,12 +13,15 @@ import ForgetPwd from "../pages/Authentication/ForgetPassword"
 // Dashboard
 import Dashboard from "../pages/Dashboard/index.js"
 
+import Categories from "../pages/Categories/index.js"
+
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
 
-  // //profile
+   //profile
   { path: "/profile", component: UserProfile },
-
+  { path: "/categories", component: Categories },
+  
   // this route should be at the end of all other routes
   // eslint-disable-next-line react/display-name
   { path: "/", exact: true, component: () => <Redirect to="/dashboard" /> },

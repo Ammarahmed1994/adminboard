@@ -110,7 +110,7 @@ const Navbar = props => {
               </li>
 
               <li className="nav-item">
-                <Link  className="nav-link  arrow-none" to="/reports">
+                <Link  className="nav-link  arrow-none" to="/categories">
                   <i className="bx bx-line-chart me-2"></i>
                   {props.t("Categories")} 
                 </Link>     
