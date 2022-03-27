@@ -10,6 +10,34 @@ import moment from "moment";
 import { CategoryService } from "services/category.service";
 import DeleteModal from "../../components/Common/DeleteModal";
 import NewAndEditModal from "./NewAndEditModal/index";
+import CategoriesGrid from "./CategoriesGrid/index";
+
+const rows = [
+  {
+    id: "c1db007f-1cb1-48a0-853f-6b1d20592ff0",
+    name: "laptop",
+    nameAr: null,
+    image: null,
+    createdAt: "2022-01-22T09:44:45.646Z",
+    updatedAt: "2022-01-23T09:44:45.646Z",
+  },
+  {
+    id: "4d8ec94c-0a82-44dc-b2cf-2f4259f9664d",
+    name: "Devices",
+    nameAr: null,
+    image: null,
+    createdAt: "2022-01-23T12:39:17.173Z",
+    updatedAt: "2022-01-24T12:39:17.176Z",
+  },
+  {
+    id: "bd0ef941-2680-4c39-a36d-e37b3e54ab3c",
+    name: "Fashion",
+    nameAr: null,
+    image: null,
+    createdAt: "2022-01-24T12:39:17.787Z",
+    updatedAt: "2022-01-25T12:39:17.787Z",
+  },
+];
 
 const Categories = (props) => {
   const [categories, setCategories] = useState([]);
@@ -22,52 +50,6 @@ const Categories = (props) => {
 
   const [deleteModal, setDeleteModal] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const results = await CategoryService.getCategoryList();
-      const categoriesData = results?.rows;
-      setCategories(categoriesData);
-
-      const numberOfPages = results?.count;
-      setPageCount(numberOfPages);
-    };
-    fetchData();
-  }, []);
-
-  const handleValidDate = (date) => {
-    const date1 = moment(new Date(date)).format("DD MMM Y");
-    return date1;
-  };
-
-  const addNew = () => {
-    setModal(true);
-    setModalValue("new");
-  };
-
-  const createNewCateogry = () => {
-      //send create new category request
-    setModal(false);
-  };
-
-  const handleEditCategory = (item) => {
-    setModal(true);
-    setModalValue("edit");
-    setCategory(item)
-  };
-
-  const updateCateogry = (data) => {
-    //send update category request
-  setModal(false);
-};
-
-  const onClickCategoryDelete = (item) => {
-    setDeleteModal(true);
-  };
-
-  const handleDeleteUser = () => {
-    setDeleteModal(false);
-  };
-
   const categoryListColumns = [
     {
       text: "id",
@@ -77,34 +59,38 @@ const Categories = (props) => {
       // eslint-disable-next-line react/display-name
       formatter: (category) => <>{category.id}</>,
     },
-    {
-      dataField: "image",
-      text: "#",
-      // eslint-disable-next-line react/display-name
-      formatter: (category) => (
-        <>
-          {!category.image ? (
-            <div className="avatar-xs">
-              <span className="avatar-title rounded-circle">
-                {category.name.charAt(0)}
-              </span>
-            </div>
-          ) : (
-            <div>
-              <img src={category.image} alt="" className="avatar-sm" />
-            </div>
-          )}
-        </>
-      ),
-    },
+    // {
+    //   dataField: "image",
+    //   text: "#",
+    //   // eslint-disable-next-line react/display-name
+    //   formatter: (category) => (
+    //     <>
+    //       {!category.image ? (
+    //         <div className="avatar-xs">
+    //           <span className="avatar-title rounded-circle">
+    //             {category.name.charAt(0)}
+    //           </span>
+    //         </div>
+    //       ) : (
+    //         <div>
+    //           {category.image !== null ? (
+    //             <img src={category.image} alt="" className="avatar-sm" />
+    //           ) : (
+    //             ``
+    //           )}
+    //         </div>
+    //       )}
+    //     </>
+    //   ),
+    // },
     {
       text: "Name",
       dataField: "name",
       sort: true,
       // eslint-disable-next-line react/display-name
-      formatter: (category) => (
+      formatter: (name) => (
         <>
-          <h5 className="font-size-14 mb-1 text-dark">{category.name}</h5>
+          <h5 className="font-size-14 mb-1 text-dark">{name}</h5>
         </>
       ),
     },
@@ -113,9 +99,9 @@ const Categories = (props) => {
       dataField: "nameAr",
       sort: true,
       // eslint-disable-next-line react/display-name
-      formatter: (cellContent, category) => (
+      formatter: (nameAr) => (
         <>
-          <h5 className="font-size-14 mb-1 text-dark">{category.nameAr}</h5>
+          <h5 className="font-size-14 mb-1 text-dark">{nameAr}</h5>
         </>
       ),
     },
@@ -124,10 +110,10 @@ const Categories = (props) => {
       dataField: "createdAt",
       sort: true,
       // eslint-disable-next-line react/display-name
-      formatter: (category) => (
+      formatter: (createdAt) => (
         <>
           <h5 className="font-size-12 text-dark">
-            {handleValidDate(category.createdAt)}
+            {handleValidDate(createdAt)}
           </h5>
         </>
       ),
@@ -137,10 +123,10 @@ const Categories = (props) => {
       dataField: "updatedAt",
       sort: true,
       // eslint-disable-next-line react/display-name
-      formatter: (category) => (
+      formatter: (updatedAt) => (
         <>
           <h5 className="font-size-12 text-dark">
-            {handleValidDate(category.updatedAt)}
+            {handleValidDate(updatedAt)}
           </h5>
         </>
       ),
@@ -172,6 +158,54 @@ const Categories = (props) => {
     },
   ];
 
+  useEffect(() => {
+    const fetchData = async () => {
+      //   const results = await CategoryService.getCategoryList();
+      //   const categoriesData = results?.rows;
+      //   setCategories(categoriesData);
+
+      //   const numberOfPages = results?.count;
+      //   setPageCount(numberOfPages);
+      setCategories(rows);
+    };
+
+    fetchData();
+  }, []);
+
+  const handleValidDate = (date) => {
+    const date1 = moment(new Date(date)).format("DD MMM Y");
+    return date1;
+  };
+
+  const addNew = () => {
+    setModal(true);
+    setModalValue("new");
+  };
+
+  const createNewCateogry = () => {
+    //send create new category request
+    setModal(false);
+  };
+
+  const handleEditCategory = (item) => {
+    setModal(true);
+    setModalValue("edit");
+    setCategory(item);
+  };
+
+  const updateCateogry = (data) => {
+    //send update category request
+    setModal(false);
+  };
+
+  const onClickCategoryDelete = (item) => {
+    setDeleteModal(true);
+  };
+
+  const handleDeleteUser = () => {
+    setDeleteModal(false);
+  };
+
   return (
     <React.Fragment>
       <DeleteModal
@@ -179,13 +213,15 @@ const Categories = (props) => {
         onDeleteClick={handleDeleteUser}
         onCloseClick={() => setDeleteModal(false)}
       />
-      <NewAndEditModal
+      {/* <NewAndEditModal
         show={modal}
         modalValue={modalValue}
-        onSubmitClick={modalValue === "new" ? createNewCateogry : updateCateogry}
+        onSubmitClick={
+          modalValue === "new" ? createNewCateogry : updateCateogry
+        }
         onCloseClick={() => setModal(false)}
         category={modalValue === "new" ? {} : category}
-      />
+      /> */}
       <div className="page-content">
         <MetaTags>
           <title>Categories | Eshailx</title>
@@ -196,8 +232,13 @@ const Categories = (props) => {
             breadcrumbItem={props.t("Categories")}
           />
 
-          <div>hello categories</div>
-          <button
+          <CategoriesGrid
+            categories={categories}
+            columns={categoryListColumns}
+            addNew={addNew}
+          />
+
+          {/* <button
             className="btn-primary"
             onClick={() =>
               addNew({ id: "", name: "", nameAr: "", image: null })
@@ -230,7 +271,7 @@ const Categories = (props) => {
             }
           >
             delete
-          </button>
+          </button> */}
         </Container>
       </div>
     </React.Fragment>
