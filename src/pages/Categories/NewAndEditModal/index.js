@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import {
   Col,
   Row,
@@ -14,32 +16,52 @@ import {
 
 const NewAndEditModal = ({
   show,
+  setShowModal,
   modalValue,
-  onSubmitClick,
   onCloseClick,
   category,
 }) => {
-  return (
-    // <Modal isOpen={show} toggle={onCloseClick} centered={true}>
-    //   <div>Modal</div>
-    //   <p>{typeof(show)}</p>
-    //   <p>{modalValue}</p>
-    //   <p>
-    //     {category.name} {category.id}
-    //   </p>
-    //   <button onClick={() => onSubmitClick(data)}></button>
-    //   <button
-    //     type="button"
-    //     className="btn btn-danger btn-lg ms-2"
-    //     onClick={onCloseClick}
-    //   >
-    //     Cancel
-    //   </button>
-    // </Modal>
+  const validation = useFormik({
+    // enableReinitialize : use this flag when initial values needs to be changed
+    enableReinitialize: true,
 
+    initialValues: {
+      name: (category && category.name) || "",
+      nameAr: (category && category.nameAr) || "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Please Enter Your Name"),
+      nameAr: Yup.string().required("Please Enter Your nameAr"),
+    }),
+    onSubmit: (values) => {
+      if (modalValue === "edit") {
+        const updateUser = {
+          id: category.id,
+          name: values.name,
+          nameAr: values.nameAr,
+        };
+
+        // update user
+        console.log(`new`, updateUser);
+        validation.resetForm();
+        setShowModal(false);
+      } else {
+        const newUser = {
+          id: Math.floor(Math.random() * (30 - 20)) + 20,
+          name: values["name"],
+          nameAr: values["nameAr"],
+        };
+        // save new user
+        console.log(`new`, newUser);
+      }
+      setShowModal(false);
+    },
+  });
+
+  return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalHeader tag="h4">
-        {modalValue === "edit" ? "Edit User" : "Add User"}
+        {modalValue === "edit" ? "Edit Category" : "Add Category"}
       </ModalHeader>
       <ModalBody>
         <Form
@@ -96,6 +118,12 @@ const NewAndEditModal = ({
           <Row>
             <Col>
               <div className="text-end">
+                <button
+                  onClick={onCloseClick}
+                  className="btn btn-danger save-user m-2"
+                >
+                  Cancel
+                </button>
                 <button type="submit" className="btn btn-success save-user">
                   Save
                 </button>
@@ -111,9 +139,9 @@ const NewAndEditModal = ({
 NewAndEditModal.propTypes = {
   modalValue: PropTypes.string,
   onCloseClick: PropTypes.func,
-  onSubmitClick: PropTypes.func,
   category: PropTypes.any,
   show: PropTypes.any,
+  setShowModal: PropTypes.func,
 };
 
 export default NewAndEditModal;

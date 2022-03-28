@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardBody, Col, Row, Button } from "reactstrap";
 import DataTable from "react-data-table-component";
 
-const CategoriesGrid = ({ categories, columns, addNew }) => {
+const CategoriesGrid = ({ categories, columns }) => {
   const customStyles = {
     headCells: {
       style: {},
@@ -14,7 +14,6 @@ const CategoriesGrid = ({ categories, columns, addNew }) => {
     },
   };
 
-  const keyField = "id";
   return (
     <Row>
       <Col lg="12">

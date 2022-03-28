@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import MetaTags from "react-meta-tags";
-import { Container } from "reactstrap";
+import { Container, Button, Col, Row } from "reactstrap";
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -12,14 +12,14 @@ import { CategoryService } from "services/category.service";
 import DeleteModal from "../../components/Common/DeleteModal";
 import NewAndEditModal from "./NewAndEditModal/index";
 import CategoriesGrid from "./CategoriesGrid/index";
-import { getProjectDetail, getProjects } from "store/actions";
 
 const rows = [
   {
     id: "c1db007f-1cb1-48a0-853f-6b1d20592ff0",
     name: "laptop",
     nameAr: null,
-    image: null,
+    image:
+      "https://i.pinimg.com/564x/20/4e/90/204e905bfc7f55c45f3a0eeddc2431c9.jpg",
     createdAt: "2022-01-22T09:44:45.646Z",
     updatedAt: "2022-01-23T09:44:45.646Z",
   },
@@ -43,8 +43,6 @@ const rows = [
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
-  const [pageCount, setPageCount] = useState(0);
-
   const [category, setCategory] = useState({});
 
   const [modal, setModal] = useState(false);
@@ -52,40 +50,20 @@ const Categories = () => {
 
   const [deleteModal, setDeleteModal] = useState(false);
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       const results = await CategoryService.getCategoryList();
-  //       console.log(`results`, results);
-  //       //   const categoriesData = results?.rows;
-  //       //   setCategories(categoriesData);
-
-  //       //   const numberOfPages = results?.count;
-  //       //   setPageCount(numberOfPages);
-
-  //       //   setCategories(rows);
-  //     };
-  //     fetchData();
-  //   }, []);
-
   useEffect(() => {
-    getProjects();
-  }, []);
+    const fetchData = async () => {
+      const results = await CategoryService.getCategoryList();
+      console.log(`results`, results);
+      //   const categoriesData = results?.rows;
+      //   setCategories(categoriesData);
 
-  async function getProjects() {
-    let res = await axios.post(
-      "45.77.29.107:4200/api/admin/catigory/list",
-      {
-        token:
-          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IjExNDA1ODY4NzkiLCJwYXNzd29yZCI6IjEyMzQ1NiIsInRpbWUiOiIyMDIyLTAyLTI0VDE0OjI2OjMxKzAyOjAwIiwiaWF0IjoxNjQ1NzA1NTkxfQ.Q-knS04FHm6ZMLMtSdBBXYlvYeZ1m8HY-x-LDrdBuZq9u6Y0OkPW4p9gN0hH1cplVA-UeW9MJhyt6f9xzIqthD8_BS7W_TbUK51UrI3zOzVhTSdlm40vR0psg4A3Fjcqd72sQarn9W75qVqxd9bttok9Nc1jgfKEUP13jVU3PTo",
-      },
-      {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Access-Control-Allow-Origin": "*",
-      }
-    );
-    console.log(`res`, res);
-    setCategories(res);
-  }
+      //   const numberOfPages = results?.count;
+      //   setPageCount(numberOfPages);
+
+      //   setCategories(rows);
+    };
+    fetchData();
+  }, []);
 
   const columns = [
     {
@@ -101,7 +79,11 @@ const Categories = () => {
           ) : (
             <div>
               {row.image !== null ? (
-                <img src={row.image} alt="" className="avatar-sm" />
+                <img
+                  src={row.image}
+                  alt=""
+                  className="rounded-circle avatar-xs"
+                />
               ) : (
                 ``
               )}
@@ -180,25 +162,13 @@ const Categories = () => {
     setModalValue("new");
   };
 
-  const createNewCateogry = () => {
-    //send create new category request
-    setModal(false);
-  };
-
   const handleEditCategory = (item) => {
-    console.log(item);
     setModal(true);
     setModalValue("edit");
     setCategory(item);
   };
 
-  const updateCateogry = (data) => {
-    //send update category request
-    setModal(false);
-  };
-
   const onClickCategoryDelete = (item) => {
-    console.log(item);
     setDeleteModal(true);
   };
 
@@ -213,19 +183,20 @@ const Categories = () => {
         onDeleteClick={handleDeleteUser}
         onCloseClick={() => setDeleteModal(false)}
       />
-      {/* <NewAndEditModal
+
+      <NewAndEditModal
         show={modal}
+        setShowModal={setModal}
         modalValue={modalValue}
-        onSubmitClick={
-          modalValue === "new" ? createNewCateogry : updateCateogry
-        }
         onCloseClick={() => setModal(false)}
         category={modalValue === "new" ? {} : category}
-      /> */}
+      />
+
       <div className="page-content">
         <MetaTags>
           <title>Categories | Eshailx</title>
         </MetaTags>
+
         <Container fluid>
           <Breadcrumbs
             // title={props.t("Categories")}
@@ -234,7 +205,20 @@ const Categories = () => {
             breadcrumbItem="Categories"
           />
 
-          {/* {categories.length !== 0 ? (
+          <Col>
+            <div className="text-sm-end mb-2">
+              <Button
+                color="primary"
+                className="font-16 btn-block btn btn-primary"
+                onClick={addNew}
+              >
+                <i className="mdi mdi-plus-circle-outline me-1" />
+                Create New Category
+              </Button>
+            </div>
+          </Col>
+          {/* 
+          {categories.length !== 0 ? (
             <CategoriesGrid
               categories={categories}
               columns={columns}
@@ -243,41 +227,6 @@ const Categories = () => {
           ) : (
             ``
           )} */}
-
-          {/* <button
-            className="btn-primary"
-            onClick={() =>
-              addNew({ id: "", name: "", nameAr: "", image: null })
-            }
-          >
-            New
-          </button>
-          <button
-            className="btn-primary"
-            onClick={() =>
-              handleEditCategory({
-                id: `1`,
-                name: "ahmed",
-                nameAr: "arabic",
-                image: null,
-              })
-            }
-          >
-            Edit
-          </button>
-          <button
-            className="btn-danger"
-            onClick={() =>
-              onClickCategoryDelete({
-                id: `1`,
-                name: "ahmed",
-                nameAr: "arabic",
-                image: null,
-              })
-            }
-          >
-            delete
-          </button> */}
         </Container>
       </div>
     </React.Fragment>
