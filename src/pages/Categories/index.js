@@ -50,17 +50,24 @@ const Categories = () => {
 
   const [deleteModal, setDeleteModal] = useState(false);
 
+  const API_URL = "http://45.77.29.107:4200/api/admin";
+
   useEffect(() => {
     const fetchData = async () => {
-      const results = await CategoryService.getCategoryList();
-      console.log(`results`, results);
+      //   const results = await CategoryService.getCategoryList();
+      //   console.log(`results`, results);
       //   const categoriesData = results?.rows;
       //   setCategories(categoriesData);
 
-      //   const numberOfPages = results?.count;
-      //   setPageCount(numberOfPages);
-
       //   setCategories(rows);
+
+      const token = {
+        token:
+          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IjExNDA1ODY4NzkiLCJwYXNzd29yZCI6IjEyMzQ1NiIsInRpbWUiOiIyMDIyLTAyLTI0VDE0OjI2OjMxKzAyOjAwIiwiaWF0IjoxNjQ1NzA1NTkxfQ.Q-knS04FHm6ZMLMtSdBBXYlvYeZ1m8HY-x-LDrdBuZq9u6Y0OkPW4p9gN0hH1cplVA-UeW9MJhyt6f9xzIqthD8_BS7W_TbUK51UrI3zOzVhTSdlm40vR0psg4A3Fjcqd72sQarn9W75qVqxd9bttok9Nc1jgfKEUP13jVU3PTo",
+      };
+      axios
+        .get(`${API_URL}/catigory/list`, { token })
+        .then((response) => console.log(`ress`, response));
     };
     fetchData();
   }, []);
