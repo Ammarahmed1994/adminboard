@@ -6,11 +6,13 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import { withTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import axios from "axios";
 
 import { CategoryService } from "services/category.service";
 import DeleteModal from "../../components/Common/DeleteModal";
 import NewAndEditModal from "./NewAndEditModal/index";
 import CategoriesGrid from "./CategoriesGrid/index";
+import { getProjectDetail, getProjects } from "store/actions";
 
 const rows = [
   {
@@ -39,7 +41,7 @@ const rows = [
   },
 ];
 
-const Categories = (props) => {
+const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [pageCount, setPageCount] = useState(0);
 
@@ -50,127 +52,123 @@ const Categories = (props) => {
 
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const categoryListColumns = [
-    {
-      text: "id",
-      dataField: "id",
-      sort: true,
-      hidden: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (category) => <>{category.id}</>,
-    },
-    // {
-    //   dataField: "image",
-    //   text: "#",
-    //   // eslint-disable-next-line react/display-name
-    //   formatter: (category) => (
-    //     <>
-    //       {!category.image ? (
-    //         <div className="avatar-xs">
-    //           <span className="avatar-title rounded-circle">
-    //             {category.name.charAt(0)}
-    //           </span>
-    //         </div>
-    //       ) : (
-    //         <div>
-    //           {category.image !== null ? (
-    //             <img src={category.image} alt="" className="avatar-sm" />
-    //           ) : (
-    //             ``
-    //           )}
-    //         </div>
-    //       )}
-    //     </>
-    //   ),
-    // },
-    {
-      text: "Name",
-      dataField: "name",
-      sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (name) => (
-        <>
-          <h5 className="font-size-14 mb-1 text-dark">{name}</h5>
-        </>
-      ),
-    },
-    {
-      text: "Arabic Name",
-      dataField: "nameAr",
-      sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (nameAr) => (
-        <>
-          <h5 className="font-size-14 mb-1 text-dark">{nameAr}</h5>
-        </>
-      ),
-    },
-    {
-      text: "Created At",
-      dataField: "createdAt",
-      sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (createdAt) => (
-        <>
-          <h5 className="font-size-12 text-dark">
-            {handleValidDate(createdAt)}
-          </h5>
-        </>
-      ),
-    },
-    {
-      text: "Updated At",
-      dataField: "updatedAt",
-      sort: true,
-      // eslint-disable-next-line react/display-name
-      formatter: (updatedAt) => (
-        <>
-          <h5 className="font-size-12 text-dark">
-            {handleValidDate(updatedAt)}
-          </h5>
-        </>
-      ),
-    },
-    {
-      dataField: "menu",
-      isDummyField: true,
-      editable: false,
-      text: "Action",
-      // eslint-disable-next-line react/display-name
-      formatter: (item) => (
-        <div className="d-flex gap-3">
-          <Link className="text-success" to="#">
-            <i
-              className="mdi mdi-pencil font-size-18"
-              id="edittooltip"
-              onClick={() => handleEditCategory(item)}
-            ></i>
-          </Link>
-          <Link className="text-danger" to="#">
-            <i
-              className="mdi mdi-delete font-size-18"
-              id="deletetooltip"
-              onClick={() => onClickCategoryDelete(item)}
-            ></i>
-          </Link>
-        </div>
-      ),
-    },
-  ];
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const results = await CategoryService.getCategoryList();
+  //       console.log(`results`, results);
+  //       //   const categoriesData = results?.rows;
+  //       //   setCategories(categoriesData);
+
+  //       //   const numberOfPages = results?.count;
+  //       //   setPageCount(numberOfPages);
+
+  //       //   setCategories(rows);
+  //     };
+  //     fetchData();
+  //   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      //   const results = await CategoryService.getCategoryList();
-      //   const categoriesData = results?.rows;
-      //   setCategories(categoriesData);
-
-      //   const numberOfPages = results?.count;
-      //   setPageCount(numberOfPages);
-      setCategories(rows);
-    };
-
-    fetchData();
+    getProjects();
   }, []);
+
+  async function getProjects() {
+    let res = await axios.post(
+      "45.77.29.107:4200/api/admin/catigory/list",
+      {
+        token:
+          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IjExNDA1ODY4NzkiLCJwYXNzd29yZCI6IjEyMzQ1NiIsInRpbWUiOiIyMDIyLTAyLTI0VDE0OjI2OjMxKzAyOjAwIiwiaWF0IjoxNjQ1NzA1NTkxfQ.Q-knS04FHm6ZMLMtSdBBXYlvYeZ1m8HY-x-LDrdBuZq9u6Y0OkPW4p9gN0hH1cplVA-UeW9MJhyt6f9xzIqthD8_BS7W_TbUK51UrI3zOzVhTSdlm40vR0psg4A3Fjcqd72sQarn9W75qVqxd9bttok9Nc1jgfKEUP13jVU3PTo",
+      },
+      {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Access-Control-Allow-Origin": "*",
+      }
+    );
+    console.log(`res`, res);
+    setCategories(res);
+  }
+
+  const columns = [
+    {
+      name: "Image",
+      cell: (row) => (
+        <>
+          {!row.image ? (
+            <div className="avatar-xs">
+              <span className="avatar-title rounded-circle">
+                {row.name.charAt(0)}
+              </span>
+            </div>
+          ) : (
+            <div>
+              {row.image !== null ? (
+                <img src={row.image} alt="" className="avatar-sm" />
+              ) : (
+                ``
+              )}
+            </div>
+          )}
+        </>
+      ),
+    },
+    {
+      name: "Name",
+      selector: (row) => <h5 className="font-size-12 text-dark">{row.name}</h5>,
+      sortable: true,
+    },
+    {
+      name: "Name Arabic",
+      selector: (row) => (
+        <h5 className="font-size-12 text-dark">{row.nameAr}</h5>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Created At",
+      cell: (row) => (
+        <h5 className="font-size-12 text-dark">
+          {handleValidDate(row.createdAt)}
+        </h5>
+      ),
+    },
+    {
+      name: "Updated At",
+      cell: (row) => (
+        <h5 className="font-size-12 text-dark">
+          {handleValidDate(row.updatedAt)}
+        </h5>
+      ),
+    },
+    {
+      name: "Delete",
+      cell: (row) => (
+        <Link className="text-danger" to="#">
+          <i
+            className="mdi mdi-delete font-size-18"
+            id="deletetooltip"
+            onClick={() => onClickCategoryDelete(row)}
+          ></i>
+        </Link>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+    {
+      name: "edit",
+      cell: (row) => (
+        <Link className="text-success" to="#">
+          <i
+            className="mdi mdi-pencil font-size-18"
+            id="edittooltip"
+            onClick={() => handleEditCategory(row)}
+          ></i>
+        </Link>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ];
 
   const handleValidDate = (date) => {
     const date1 = moment(new Date(date)).format("DD MMM Y");
@@ -188,6 +186,7 @@ const Categories = (props) => {
   };
 
   const handleEditCategory = (item) => {
+    console.log(item);
     setModal(true);
     setModalValue("edit");
     setCategory(item);
@@ -199,6 +198,7 @@ const Categories = (props) => {
   };
 
   const onClickCategoryDelete = (item) => {
+    console.log(item);
     setDeleteModal(true);
   };
 
@@ -228,15 +228,21 @@ const Categories = (props) => {
         </MetaTags>
         <Container fluid>
           <Breadcrumbs
-            title={props.t("Categories")}
-            breadcrumbItem={props.t("Categories")}
+            // title={props.t("Categories")}
+            // breadcrumbItem={props.t("Categories")}
+            title="Categories"
+            breadcrumbItem="Categories"
           />
 
-          <CategoriesGrid
-            categories={categories}
-            columns={categoryListColumns}
-            addNew={addNew}
-          />
+          {/* {categories.length !== 0 ? (
+            <CategoriesGrid
+              categories={categories}
+              columns={columns}
+              addNew={addNew}
+            />
+          ) : (
+            ``
+          )} */}
 
           {/* <button
             className="btn-primary"
